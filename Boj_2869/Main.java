@@ -12,6 +12,7 @@ public class Main {
         V-=A;
         int day = V/(A-B);
         int mock = V%(A-B);
+
         if(mock!=0) {
             System.out.println(day+2);
         } else {
