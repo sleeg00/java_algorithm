@@ -60,8 +60,8 @@ public class Main {
         } else {
             int x = list.get(index).first;
             int y = list.get(index).second;
-            for(int i=1; i<=9; i++) {
-                visit[i]=0;
+            for (int i = 1; i <= 9; i++) {
+                visit[i] = 0;
             }
             for (int i = 1; i <= 9; i++) {
                 visit[map[x][i]] = 1;
