@@ -1,4 +1,4 @@
-package org.example.Boj_1439;
+package org.example.Boj_1269.Boj_1439;
 
 import java.util.*;
 
