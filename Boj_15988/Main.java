@@ -2,23 +2,28 @@ package org.example.Boj_15988;
 
 import java.util.*;
 import java.io.*;
+// 1 <= N <= 1,000,000
+//
 public class Main {
     public static void main(String[] args) throws IOException{
-
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
-        int[] dp = new int[11];
-        dp[1] = 1;
-        dp[2] = 2;
-        dp[3] = 4;
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        long[] Dp = new long[1000004];
+        int N = Integer.parseInt(br.readLine());
+        Dp[0] = 0;
+        Dp[1]=1;
+        Dp[2]=2;
+        Dp[3]=4;
+        for(int i=4; i<=1000001; i++) {
+            Dp[i] = (Dp[i-1]+Dp[i-2]+Dp[i-3]) % 1000000009;
+        }
 
-        for(int i=4; i<11; i++) {
-            dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
+        for(int i=0; i<N; i++) {
+            int number = Integer.parseInt(br.readLine());
+            bw.write(Dp[number] + "\n");
         }
-        for(int i=0; i<t; i++) {
-            int num = Integer.parseInt(br.readLine());
-            System.out.println(dp[num]);
-        }
+        bw.flush();
+        br.close();
+        bw.close();
     }
 }
