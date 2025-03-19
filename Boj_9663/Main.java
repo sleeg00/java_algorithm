@@ -1,42 +1,50 @@
 package org.example.Boj_9663;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.*;
 
 public class Main {
-    static int N;
-    static int arr[] = new int[16];
-    static int cnt = 0;
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    static int N, cnt = 0;
+    static int[] visit;
+    static int[] col;
 
-        N = sc.nextInt();
-        dfs(0);
-        System.out.println(cnt);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        N = Integer.parseInt(br.readLine());
+        visit = new int[N + 1];
+        col = new int[N + 1];
+
+        back(1);
+        bw.write(cnt + " ");
+        bw.flush();
+        bw.close();
+        br.close();
     }
 
-    public static void dfs(int d) {
+    static void back(int idx) {
 
-        if(d==N) {
+        if (idx == N + 1) {
             cnt++;
             return;
-        } else {
-            for(int i=0; i<N; i++) {
-                arr[d]=i;
-                if(check(d)) {
-                    dfs(d+1);
+        }
+        for (int i = 1; i <= N; i++) {
+            boolean sw = true;
+            for (int j = 1; j < idx; j++) {
+                if (Math.abs(i - col[j]) == Math.abs(idx - j) || col[j] == i) {
+                    sw = false;
+                    break;
                 }
             }
-        }
-    }
-
-    public static boolean check(int d) {
-        for(int i=0; i<d; i++) {
-            if(arr[i] == arr[d]) {
-                return false;
-            } else if(Math.abs(arr[d]-arr[i]) == Math.abs(d-i)) {
-                return false;
+            if (sw) {
+                col[idx]=i;
+                back(idx + 1);
             }
         }
-        return true;
     }
 }
