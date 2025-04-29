@@ -77,18 +77,19 @@ public class Main {
     public static void attack(ArrayList<Integer> archer) {
         int res = 0;
         for (int top = 1; top <= N; top++) {
-           shotArrow(archer, res);
+           res=shotArrow(archer, res);
         }
+        ans = Math.max(ans, res);
     }
 
-    private static void shotArrow(ArrayList<Integer> archer, int res) {
+    private static int shotArrow(ArrayList<Integer> archer, int res) {
         visited = new boolean[N + 1][M + 1];
         for (int k = 0; k < 3; k++) {
             getMinShot(archer.get(k));
         }
         res = isCanAttack(res);
         changeMap();
-        ans = Math.max(ans, res);
+        return res;
     }
 
     private static void getMinShot(int archer_x) {
