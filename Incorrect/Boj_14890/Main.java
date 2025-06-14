@@ -1,4 +1,4 @@
-package org.example.GoldRandomDepence.Boj_14890;
+package org.example.Incorrect.Boj_14890;
 
 // N * N 칸의 높이
 // 길 : 2N개

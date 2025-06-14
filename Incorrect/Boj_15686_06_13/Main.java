@@ -1,4 +1,4 @@
-package org.example.GoldRandomDepence.Boj_15686_x;
+package org.example.Incorrect.Boj_15686_06_13;
 
 import java.util.*;
 import java.io.*;
