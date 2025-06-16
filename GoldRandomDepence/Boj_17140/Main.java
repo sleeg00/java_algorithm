@@ -15,29 +15,18 @@ import java.util.Map.Entry;
 // [수의 등장 횟수 오름차순 -> 중복시 수 오름차순][수 등장 횟수]
 public class Main {
     public static class Node {
-        int countOfNumber, number;
+        int number, countOfNumber;
 
-        public Node(int countOfNumber, int number) {
-            this.countOfNumber = countOfNumber;
+        public Node(int number, int countOfNumber) {
             this.number = number;
+            this.countOfNumber = countOfNumber;
         }
     }
 
-    static int R, C, K, N = 3, M = 3, maN, maM;
-    static ArrayList<ArrayList<Integer>> map = new ArrayList<>();
-    static PriorityQueue<Node> pq = new PriorityQueue<>((p1, p2) -> {
-        if (p1.countOfNumber == p2.countOfNumber) { // 등장 횟수가 같으면
-            if (p1.number < p2.number) {
-                return -1;
-            }
-            return 1;
-        }
-        if (p1.countOfNumber < p2.countOfNumber) {
-            return -1;
-        }
-        return 1;
-    });
+    static int R, C, K, row=3, col=3;
+    static int[][] map = new int[101][101], temp = new int[101][101];
     static HashMap<Integer, Integer> hashMap = new HashMap<>();
+    static ArrayList<Node> list = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -46,133 +35,74 @@ public class Main {
         C = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
         for (int i = 0; i < 3; i++) {
-            map.add(new ArrayList<>());
             st = new StringTokenizer(br.readLine(), " ");
             for (int j = 0; j < 3; j++) {
-                map.get(i).add(Integer.parseInt(st.nextToken()));
+                map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        maN = N;
-        maM = M;
-        N = maN;
-        M = maM;
-        if (checkAns(0)) return;
         int cnt = 0;
-
-        while (cnt <= 100) {
-            boolean sw = false;
-            for (int i = 0; i < maN; i++) {
-                if (N >= M) {
-                    for (int j = 0; j < M; j++) {
-                        int value = map.get(i).get(j);
-                        changeHashMap(value);
-                        sw = true;
-                    }
+        while (true) {
+            temp = new int[101][101];
+            if (map[R-1][C-1]==K) break;
+            if(cnt>100) {
+                cnt=-1;
+                break;
+            }
+            if(row >= col) {
+                for (int i = 0; i < row; i++) {
+                    for (int j = 0; j < col; j++)
+                        changeHashMap(map[i][j]);
+                    if(hashMap.isEmpty()) continue;
                     sorting();
                     initList(i);
+                    hashMap.clear();
+                    list.clear();
                 }
-            }
-
-            addZero();
-          //  print();
-
-            if(sw) cnt++;
-            sw = false;
-            if (checkAns(cnt)) return;
-
-            for (int i = 0; i < maM; i++) {
-                if (N < maM) {
-                    sw = true;
-                    for (int j = 0; j < N; j++) {
-                        int value = map.get(j).get(i);
-                        changeHashMap(value);
-                    }
+            } else {
+                for (int i = 0; i < col; i++) {
+                    for (int j = 0; j < row; j++)
+                        changeHashMap(map[j][i]);
+                    if(hashMap.isEmpty()) continue;
                     sorting();
                     initListCol(i);
+                    hashMap.clear();
+                    list.clear();
                 }
             }
-
-            addZeroCol();
-
-          //  print();
-          //  System.out.println();
-
-            if(sw) cnt++;
-            if (checkAns(cnt)) return;
-
+            map = temp;
+            cnt++;
         }
-        System.out.println(-1);
+        System.out.println(cnt);
     }
-
-    private static boolean checkAns(int cnt) {
-        if (map.get(R - 1).get(C - 1) == K) {
-            System.out.print(cnt);
-            return true;
-        }
-        return false;
-    }
-
-    private static void addZero() {
-        for (int i = 0; i < maN; i++) {
-            while (map.get(i).size() < maM) {
-                map.get(i).add(0);
-            }
-        }
-    }
-
-    private static void print() {
-        for (int i = 0; i < maN; i++) {
-            for (int j = 0; j < maM; j++) {
-                System.out.print(map.get(i).get(j) + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    private static void addZeroCol() {
-        int now_size = map.size();
-        while (now_size < maN) {
-            map.add(new ArrayList<>());
-            for (int i = 0; i < maM; i++) {
-                map.get(map.size() - 1).add(0);
-            }
-        }
-    }
-
     private static void initListCol(int idx) {
-        while (map.size() < pq.size() * 2) {
-            map.add(new ArrayList<>());
-            for (int i = 0; i < maM; i++) {
-                map.get(map.size() - 1).add(0);
-            }
-        }
-        maN = Math.max(maN, map.size());
-        for(int i=0; i<maN; i++) {
-            if(pq.isEmpty()) {
-                map.get(i).set(idx, 0);
-            } else {
-                Node node = pq.poll();
-                map.get(i).set(idx, node.number);
-                i++;
-                map.get(i).set(idx, node.countOfNumber);
-            }
+        row = Math.max(row,list.size()*2);
+        int i = 0;
+        for(Node node : list){
+            temp[i++][idx] = node.number;
+            temp[i++][idx] = node.countOfNumber;
         }
     }
 
     private static void initList(int idx) {
-        map.get(idx).clear();
-        while (!pq.isEmpty()) {
-            map.get(idx).add(pq.peek().number);
-            map.get(idx).add(pq.poll().countOfNumber);
+        col= Math.max(col, list.size()*2);
+        int i = 0;
+        for(Node node : list){
+            temp[idx][i++] = node.number;
+            temp[idx][i++] = node.countOfNumber;
         }
-        maM = Math.max(maM, map.get(idx).size());
     }
 
     private static void sorting() {
-        for (Entry<Integer, Integer> entry : hashMap.entrySet()) {
-            pq.add(new Node(entry.getValue(), entry.getKey())); // 등장 횟수, 숫자
-        }
-        hashMap.clear();
+        for(Integer key : hashMap.keySet())	//숫자 반복횟수 리스트에 저장
+            list.add(new Node(key, hashMap.get(key)));
+        Collections.sort(list, (p1,p2) -> {
+            if (p1.countOfNumber == p2.countOfNumber) { // 등장 횟수가 같으면
+                if (p1.number < p2.number) return -1;
+                return 1;
+            }
+            if (p1.countOfNumber < p2.countOfNumber) return -1;
+            return 1;
+        });
     }
 
     private static void changeHashMap(int value) {
